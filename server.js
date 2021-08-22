@@ -24,6 +24,9 @@ app.use('/api/admin', router.admin.auth, router.admin.user, router.admin.person)
 app.use('/api/general', router.general.routes);
 
 //error handle middleware
+app.get('/healthcheck', (req, res) => {
+    res.status(200).send("hello")
+})
 
 app.get('/api/error', (req, res) => {
     throw new ErrorHandler(500, 'Internal server error');
