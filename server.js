@@ -11,6 +11,7 @@ const router = require('./router.js');
 const formidable = require('express-formidable');
 const {mapFieldsToBody} = require("./middleware/mapFieldsToBody");
 const { handleError, ErrorHandler } = require('./helpers/errors');
+const seeds = require('./Seeds/Seeds')
 const app = express();
 app.use(cors());
 app.use(formidable());
@@ -37,6 +38,13 @@ app.use((err, req, res, next) => {
 app.use('*', (req, res) => {
     res.status(404).send("not found")
 });
+
+for (const seed of seeds) {
+    const asyncCall = async ()=>{
+        await seed();
+    }
+    asyncCall()
+}
 
 // log your server is running and the port
 const port = process.env.PORT;

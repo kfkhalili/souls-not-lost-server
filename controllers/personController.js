@@ -1,4 +1,5 @@
 const Person = require("../models/Person");
+const Nationality = require("../models/Nationality");
 const {personModel} = require("./cModels/PersonModel");
 
 //getProfiles function to get all profiles
@@ -7,6 +8,7 @@ const getPeople = async (req, res) => {
     const pageSize = req.query.pageSize || 0;
     const users = await Person.find({})
         .select(personModel)
+        .populate("causeOfDeath occupation nationality")
         .sort({createdAt: -1})
         .skip((page - 1) * pageSize)
         .limit(pageSize);
@@ -30,6 +32,10 @@ const createAndUpdatePerson = async (req, res) => {
         person = await Person.findOne({_id: req.body._id});
         person.overwrite(req.body)
         await person.save();
+        res.send({
+            data: person,
+            message: "Person updated"
+        });
     } else {
         const profile = await Person.findOne({name: req.body.name});
         if (profile) {
@@ -37,12 +43,11 @@ const createAndUpdatePerson = async (req, res) => {
         }
         const newProfile = new Person(req.body);
         await newProfile.save();
+        res.send({
+            data: newProfile,
+            message: "Person added"
+        });
     }
-
-    res.send({
-        data: newProfile,
-        message: "Person added/updated"
-    });
 };
 
 const removePerson = async (req, res) => {

@@ -1,6 +1,4 @@
 'use strict';
-const {createAndUpdatePersonValidator} = require( "../../models/validators/validators");
-
 const { isAdmin } = require("../../middleware/admin/isAuth");
 const ash = require('express-async-handler');
 const express = require('express');
@@ -11,6 +9,6 @@ const { body } = require("express-validator/check");
 
 router.get('/people', isAdmin, ash(personController.getPeople));
 
-router.post('/person', isAdmin, mapFieldsToBody, body("testtest").exists().isFloat(), createAndUpdatePersonValidator, ash(personController.createAndUpdatePerson));
+router.post('/person', isAdmin, mapFieldsToBody, body("testtest").exists().isFloat(), ash(personController.createAndUpdatePerson));
 
 module.exports = router;
