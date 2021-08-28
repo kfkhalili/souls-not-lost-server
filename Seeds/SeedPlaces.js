@@ -1,4 +1,4 @@
-const PlaceOfDeath = require('../models/PlaceOfDeath');
+const PlaceOfDeath = require('../models/Place');
 const data = [
     {
         name:"place 1",
