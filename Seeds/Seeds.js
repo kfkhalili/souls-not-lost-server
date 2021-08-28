@@ -1,5 +1,5 @@
 module.exports = [
-    require("./seedNationality"),
+    require("./SeedNationality"),
     require("./SeedCauseOfDeath"),
     require("./SeedPlaces"),
 ]
