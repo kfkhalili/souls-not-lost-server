@@ -1,7 +1,6 @@
 'use strict';
 require('dotenv').config()
 const express = require("express");
-const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan')
 const fileRoutes = require('./routes/fileUploadRoutes');
@@ -23,6 +22,7 @@ app.use(morgan("tiny"))
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', router.admin.auth, router.admin.user, router.admin.person);
 app.use('/api/general', router.general.routes);
+app.use('/api', personRoutes.routes);
 
 //error handle middleware
 app.get('/healthcheck', (req, res) => {

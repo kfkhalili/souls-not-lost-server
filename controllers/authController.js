@@ -8,12 +8,7 @@ const User = require("../models/User");
 const register = async (req, res) => {
     try {
         const {username, email, password} = req.body;
-        if ((!username, !email, !password)) {
-            return res.status(400).json({msg: "Please fill all the fields"});
-        }
-
         const token = jwt.sign({email: email}, process.env.JWT_ENCODE_SECRET);
-
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 

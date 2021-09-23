@@ -22,6 +22,14 @@ const getPeople = async (req, res) => {
     });
 };
 
+//getProfiles function to get all profiles
+const getPerson = async (req, res) => {
+    const user = await Person.findOne({_id: req.params.id})
+        .select(personModel)
+        .populate("causeOfDeath occupation nationality deathPlace birthplace createdBy");
+    res.status(200).json(user);
+};
+
 //createProfile function to create new name
 const createAndUpdatePerson = async (req, res) => {
     if (req.body._id > " ") {
@@ -69,5 +77,6 @@ const removePerson = async (req, res) => {
 module.exports = {
     getPeople,
     createAndUpdatePerson,
-    removePerson
+    removePerson,
+    getPerson
 };
