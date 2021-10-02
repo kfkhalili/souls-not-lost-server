@@ -9,6 +9,6 @@ const { body } = require("express-validator/check");
 
 router.get('/people', isAdmin, ash(personController.getPeople));
 
-router.post('/person', isAdmin, mapFieldsToBody, body("testtest").exists().isFloat(), ash(personController.createAndUpdatePerson));
+router.post('/person', isAdmin, mapFieldsToBody, ash(personController.createAndUpdatePerson));
 
 module.exports = router;

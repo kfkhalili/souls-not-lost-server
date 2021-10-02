@@ -13,8 +13,8 @@ const personSchema = new schema({
   nationality:  { type: mongoose.Schema.Types.ObjectId, ref: 'Nationality' },
   occupation: { type: mongoose.Schema.Types.ObjectId, ref: 'Nationality' },
   causeOfDeath: { type: mongoose.Schema.Types.ObjectId, ref: 'CauseOfDeath' },
-  url: { type : String, required: true, trim: true},
-  image: [{ type : Buffer, required: true }],
+  url: { type : String, required: false, trim: true},
+  image: [{ type : String, required: false }],
   createdBy:{ type: schema.Types.ObjectId, ref: 'user'},
 });
 personSchema.index({ name:1 }, { unique: true })

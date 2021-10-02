@@ -9,6 +9,7 @@ class personModel{
     causeOfDeath
     url
     picture
+    image
 }
 
 module.exports.personModel = extractQuery(new personModel())

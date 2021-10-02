@@ -1,6 +1,8 @@
 const Person = require("../models/Person");
-const Nationality = require("../models/Nationality");
 const {personModel} = require("./cModels/PersonModel");
+const fs = require("fs");
+const {uploadImageByFormaidable} = require("../helpers/s3");
+const {v4: uuidv4} = require("uuid");
 
 //getProfiles function to get all profiles
 const getPeople = async (req, res) => {
@@ -31,6 +33,11 @@ const createAndUpdatePerson = async (req, res) => {
         }
         person = await Person.findOne({_id: req.body._id});
         person.overwrite(req.body)
+        if(req.files.picture){
+            const bodyStream = fs.createReadStream(req.files.picture.path);
+            const fileName = req.files.picture.name;
+            newProfile.image = [await uploadImageByFormaidable(bodyStream, `${uuidv4()}_${fileName}`)];
+        }
         await person.save();
         res.send({
             data: person,
@@ -42,6 +49,11 @@ const createAndUpdatePerson = async (req, res) => {
             return res.status(409).send(`Person with name ${req.body.name} already exists`);
         }
         const newProfile = new Person(req.body);
+        if(req.files.picture){
+            const bodyStream = fs.createReadStream(req.files.picture.path);
+            const fileName = req.files.picture.name;
+            newProfile.image = [await uploadImageByFormaidable(bodyStream, `${uuidv4()}_${fileName}`)];
+        }
         await newProfile.save();
         res.send({
             data: newProfile,
