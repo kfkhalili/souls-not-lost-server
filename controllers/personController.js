@@ -10,7 +10,8 @@ const getPeople = async (req, res) => {
     const pageSize = req.query.pageSize || 0;
     const users = await Person.find({})
         .select(personModel)
-        .populate("causeOfDeath occupation nationality deathPlace birthplace createdBy")
+        .populate("causeOfDeath occupation nationality deathPlace birthplace")
+        .populate('createdBy', 'username email')
         .sort({createdAt: -1})
         .skip((page - 1) * pageSize)
         .limit(pageSize);
@@ -26,40 +27,34 @@ const getPeople = async (req, res) => {
 
 //createProfile function to create new name
 const createAndUpdatePerson = async (req, res) => {
+    let person;
     if (req.body._id > " ") {
-        const profile = await Person.findOne({name: name, _id: {$ne: req.body._id}});
-        if (profile) {
-            return res.status(409).send(`Person with name ${name} already exists`);
+        person = await Person.findOne({name: req.body.name, _id: {$ne: req.body._id}});
+        if (person) {
+            return res.status(409).send(`Person with name ${req.body.name} already exists`);
         }
         person = await Person.findOne({_id: req.body._id});
         person.overwrite(req.body)
-        if(req.files.picture){
-            const bodyStream = fs.createReadStream(req.files.picture.path);
-            const fileName = req.files.picture.name;
-            newProfile.image = [await uploadImageByFormaidable(bodyStream, `${uuidv4()}_${fileName}`)];
-        }
-        await person.save();
-        res.send({
-            data: person,
-            message: "Person updated"
-        });
     } else {
-        const profile = await Person.findOne({name: req.body.name});
-        if (profile) {
+        person = await Person.findOne({name: req.body.name});
+        if (person) {
             return res.status(409).send(`Person with name ${req.body.name} already exists`);
         }
-        const newProfile = new Person(req.body);
-        if(req.files.picture){
-            const bodyStream = fs.createReadStream(req.files.picture.path);
-            const fileName = req.files.picture.name;
-            newProfile.image = [await uploadImageByFormaidable(bodyStream, `${uuidv4()}_${fileName}`)];
-        }
-        await newProfile.save();
-        res.send({
-            data: newProfile,
-            message: "Person added"
-        });
+        person = new Person(req.body);
     }
+
+    if(req.files.picture){
+        const bodyStream = fs.createReadStream(req.files.picture.path);
+        const fileName = req.files.picture.name;
+        person.image = [await uploadImageByFormaidable(bodyStream, `${uuidv4()}_${fileName}`)];
+    }
+
+    person.createdBy = req.user.id;
+    await person.save();
+    res.send({
+        data: person,
+        message: "Person updated sucessfully"
+    });
 };
 
 const removePerson = async (req, res) => {

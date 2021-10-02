@@ -29,7 +29,7 @@ const isAdmin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
     }
-    req.userId = decodedToken.userId;
+    req.user = decodedToken;
     next();
 };
 module.exports = {

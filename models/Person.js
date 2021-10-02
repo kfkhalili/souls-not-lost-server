@@ -15,7 +15,7 @@ const personSchema = new schema({
   causeOfDeath: { type: mongoose.Schema.Types.ObjectId, ref: 'CauseOfDeath' },
   url: { type : String, required: false, trim: true},
   image: [{ type : String, required: false }],
-  createdBy:{ type: schema.Types.ObjectId, ref: 'user'},
+  createdBy:{ type: schema.Types.ObjectId, ref: 'User'},
 });
 personSchema.index({ name:1 }, { unique: true })
 // Compile model from schema

@@ -27,7 +27,7 @@ const users = async (req, res) => {
   const page = req.query.pageNumber || 0;
   const pageSize = req.query.pageSize || 0;
   const userType = req.query.userType || "client";
-  const users = await User.find({userType})
+  const users = await User.find({})
       .select(userModel)
       .sort({createdAt: -1})
       .skip((page - 1) * pageSize)

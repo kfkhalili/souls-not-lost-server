@@ -70,8 +70,11 @@ const login = async (req, res) => {
 
     const payload = {id: user._id, username: user.username, userType: user.userType};
     const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1d",});
-
     res.status(200).json({
+        status: user.status,
+        userType: user.userType,
+        canUpload: user.canUpload,
+        _id: user._id,
         userId: user._id,
         username: user.username,
         email: user.email,
