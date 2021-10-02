@@ -62,9 +62,9 @@ const admins = async (req, res) => {
 
 const canUpload = async (req, res)=>{
   const user = await User
-      .findOne({ _id:req.query.id })
+      .findOne({ _id:req.query._id })
       .select(userModel);
-  user.canUpload = req.query.canUpload === "1";
+  user.canUpload = req.query.canUpload;
   await user.save();
 
   res.status(200).json({

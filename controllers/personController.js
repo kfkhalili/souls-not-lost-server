@@ -10,7 +10,7 @@ const getPeople = async (req, res) => {
     const pageSize = req.query.pageSize || 0;
     const users = await Person.find({})
         .select(personModel)
-        .populate("causeOfDeath occupation nationality deathPlace birthplace")
+        .populate("causeOfDeath occupation nationality deathPlace birthplace deathPlace")
         .populate('createdBy', 'username email')
         .sort({createdAt: -1})
         .skip((page - 1) * pageSize)
