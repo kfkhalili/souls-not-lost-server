@@ -1,8 +1,5 @@
 'use strict';
-const express = require('express');
-const {body} = require('express-validator');
-const router = express.Router();
-const Person = require('../models/Person')
+const router = require('express').Router();
 const cont = require('../controllers/personController.js');
 
 router.get('/person', cont.getPeople);

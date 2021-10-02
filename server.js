@@ -1,12 +1,9 @@
 'use strict';
 require('dotenv').config()
 const express = require("express");
-const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan')
-const fileRoutes = require('./routes/fileUploadRoutes');
 const authRoutes = require('./routes/authRoutes');
-const personRoutes = require('./routes/personRoutes');
 const router = require('./router.js');
 const formidable = require('express-formidable');
 const {mapFieldsToBody} = require("./middleware/mapFieldsToBody");
@@ -23,6 +20,8 @@ app.use(morgan("tiny"))
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', router.admin.auth, router.admin.user, router.admin.person);
 app.use('/api/general', router.general.routes);
+app.use('/api/upload', router.imageUpload.routes);
+app.use('/api/public/', router.publicPerson.routes);
 
 //error handle middleware
 app.get('/healthcheck', (req, res) => {
