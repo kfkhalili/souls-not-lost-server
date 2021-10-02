@@ -2,6 +2,7 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const {canUpload} = require("./userController");
 // const nodemailer = require("../helpers/nodemailer");
 
 // register user by passing username, email, and hashing the password
@@ -68,7 +69,7 @@ const login = async (req, res) => {
         return res.status(400).json({msg: "Incorrect account or password"});
     }
 
-    const payload = {id: user._id, username: user.username, userType: user.userType};
+    const payload = {id: user._id, username: user.username, userType: user.userType, canUpload: user.canUpload};
     const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1d",});
     res.status(200).json({
         status: user.status,

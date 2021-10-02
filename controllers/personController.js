@@ -25,6 +25,17 @@ const getPeople = async (req, res) => {
     });
 };
 
+//getProfiles function to get all profiles
+const getPersonById = async (req, res) => {
+    const id = req.params.id;
+    const person = await Person.findOne({_id: id})
+        .select(personModel)
+        .populate("causeOfDeath occupation nationality deathPlace birthplace")
+        .populate('createdBy', 'username email');
+
+    res.status(200).json(person);
+};
+
 //createProfile function to create new name
 const createAndUpdatePerson = async (req, res) => {
     let person;
@@ -58,11 +69,11 @@ const createAndUpdatePerson = async (req, res) => {
 };
 
 const removePerson = async (req, res) => {
-    const result = await Person.deleteOne({_id: req.body._id});
+    const result = await Person.deleteOne({_id: req.params.id});
 
     if (result.deletedCount > 0) {
         res.send({
-            data: deletedCount,
+            data: result.deletedCount,
             message: "Person deleted"
         });
     }else{
@@ -76,5 +87,6 @@ const removePerson = async (req, res) => {
 module.exports = {
     getPeople,
     createAndUpdatePerson,
-    removePerson
+    removePerson,
+    getPersonById
 };
