@@ -1,4 +1,5 @@
 const Person = require("../models/Person");
+const Occupation = require("../models/Occupation");
 const {personModel} = require("./cModels/PersonModel");
 const fs = require("fs");
 const {uploadImageByFormaidable} = require("../helpers/s3");
@@ -39,6 +40,9 @@ const getPersonById = async (req, res) => {
 //createProfile function to create new name
 const createAndUpdatePerson = async (req, res) => {
     let person;
+    if(req.body.occupation > " "){
+        req.body.occupation = req.body.occupation.split(",")
+    }
     if (req.body._id > " ") {
         person = await Person.findOne({name: req.body.name, _id: {$ne: req.body._id}});
         if (person) {
@@ -46,9 +50,9 @@ const createAndUpdatePerson = async (req, res) => {
         }
         person = await Person.findOne({_id: req.body._id});
         person.overwrite(req.body)
-    } else {
-        person = await Person.findOne({name: req.body.name});
-        if (person) {
+        } else {
+            person = await Person.findOne({name: req.body.name});
+            if (person) {
             return res.status(409).send(`Person with name ${req.body.name} already exists`);
         }
         person = new Person(req.body);
@@ -62,7 +66,23 @@ const createAndUpdatePerson = async (req, res) => {
 
     person.createdBy = req.user.id;
     await person.save();
-    res.send({
+    try {
+        if(req.body.occupation){
+            for (const i in req.body.occupation) {
+                const filter = { name: req.body.occupation[i] };
+                const update = { nameAr: req.body.occupation[i] };
+                const occupation = await Occupation.findOneAndUpdate(filter, update, {
+                    new: true,
+                    upsert: true // Make this update into an upsert
+                });
+                await occupation.save();
+            }
+        }
+    } catch {
+        
+    }
+    
+    res.send({  
         data: person,
         message: "Person updated sucessfully"
     });
