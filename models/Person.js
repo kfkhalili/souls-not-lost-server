@@ -11,7 +11,7 @@ const personSchema = new schema({
   death: { type : Date, min: this.birth, required: true, trim: true},
   deathPlace: { type: mongoose.Schema.Types.ObjectId, ref: 'Place' },
   nationality:  { type: mongoose.Schema.Types.ObjectId, ref: 'Nationality' },
-  occupation: { type: mongoose.Schema.Types.ObjectId, ref: 'Nationality' },
+  occupation: { type: mongoose.Schema.Types.String, trim:true },
   causeOfDeath: { type: mongoose.Schema.Types.ObjectId, ref: 'CauseOfDeath' },
   url: { type : String, required: false, trim: true},
   image: [{ type : String, required: false }],
