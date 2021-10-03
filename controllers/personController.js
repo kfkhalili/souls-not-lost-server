@@ -1,4 +1,5 @@
 const Person = require("../models/Person");
+const CauseOfDeath = require('../models/CauseOfDeath');
 const Occupation = require("../models/Occupation");
 const {personModel} = require("./cModels/PersonModel");
 const fs = require("fs");
@@ -11,7 +12,7 @@ const getPeople = async (req, res) => {
     const pageSize = req.query.pageSize || 0;
     const users = await Person.find({})
         .select(personModel)
-        .populate("causeOfDeath nationality deathPlace birthplace deathPlace")
+        .populate("nationality deathPlace birthplace deathPlace")
         .populate('createdBy', 'username email')
         .sort({createdAt: -1})
         .skip((page - 1) * pageSize)
@@ -31,7 +32,7 @@ const getPersonById = async (req, res) => {
     const id = req.params.id;
     const person = await Person.findOne({_id: id})
         .select(personModel)
-        .populate("causeOfDeath nationality deathPlace birthplace")
+        .populate("nationality deathPlace birthplace")
         .populate('createdBy', 'username email');
 
     res.status(200).json(person);
@@ -81,7 +82,19 @@ const createAndUpdatePerson = async (req, res) => {
     } catch {
         
     }
-    
+    try {
+        if(req.body.causeOfDeath){
+            const filter = { name: req.body.causeOfDeath };
+            const update = { nameAr: req.body.causeOfDeath };
+            const causeOfDeath = await CauseOfDeath.findOneAndUpdate(filter, update, {
+                new: true,
+                upsert: true // Make this update into an upsert
+            });
+            await causeOfDeath.save();
+        }
+    } catch {
+
+    }
     res.send({  
         data: person,
         message: "Person updated sucessfully"

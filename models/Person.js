@@ -12,7 +12,7 @@ const personSchema = new schema({
   deathPlace: { type: mongoose.Schema.Types.ObjectId, ref: 'Place' },
   nationality:  { type: mongoose.Schema.Types.ObjectId, ref: 'Nationality' },
   occupation:  [{ type: String, trim: true }],
-  causeOfDeath: { type: mongoose.Schema.Types.ObjectId, ref: 'CauseOfDeath' },
+  causeOfDeath: { type: String, trim: true },
   url: { type : String, required: false, trim: true},
   image: [{ type : String, required: false }],
   createdBy:{ type: schema.Types.ObjectId, ref: 'User'},
