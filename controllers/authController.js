@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const {canUpload} = require("./userController");
+const {sendResetPasswordEmail} = require("../helpers/nodemailer");
 // const nodemailer = require("../helpers/nodemailer");
 
 // register user by passing username, email, and hashing the password
@@ -98,12 +99,38 @@ const verifyUser = (req, res) => {
                 return;
             }
         });
-    })
-        .catch((e) => console.log("error", e));
+    }).catch((e) => console.log("error", e));
+};
+
+const sendResetPasswordRequest = async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
+    await sendResetPasswordEmail(email, user.username, user.confirmationCode)
+    return res.json({message: "Reset password email sent"});
+}
+
+const resetPassword = async (req, res) => {
+    let {email, confirmationCode, password} = req.body;
+    if (!email || !password) {
+        return res.status(400).json({message: "Please fill all the fields"});
+    }
+
+    const user = await User.findOne({ email });
+    if(user.confirmationCode !== confirmationCode){
+        return res.status(401).json({message: "Not authorized"})
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    await user.save();
+
+    return res.json({ message: "password changed" });
 };
 
 module.exports = {
     register,
     login,
-    verifyUser
+    verifyUser,
+    sendResetPasswordRequest,
+    resetPassword
 };

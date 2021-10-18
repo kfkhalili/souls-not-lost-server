@@ -15,7 +15,7 @@ app.use(formidable());
 app.use(mapFieldsToBody)
 require('./database')();
 
-app.use(morgan("tiny"))
+app.use(morgan("combined"))
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', router.admin.auth, router.admin.user, router.admin.person);
