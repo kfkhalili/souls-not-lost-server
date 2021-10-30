@@ -14,7 +14,7 @@ const getPeople = async (req, res) => {
         .select(personModel)
         .populate("nationality deathPlace birthplace deathPlace")
         .populate('createdBy', 'username email')
-        .sort({createdAt: -1})
+        .sort(req.query.filterBy === "death" ? {death: -1} : {createdAt: -1})
         .skip((page - 1) * pageSize)
         .limit(pageSize);
     const total = await Person.find({}).countDocuments();

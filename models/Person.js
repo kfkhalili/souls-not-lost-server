@@ -16,7 +16,8 @@ const personSchema = new schema({
   url: { type : String, required: false, trim: true},
   image: [{ type : String, required: false }],
   createdBy:{ type: schema.Types.ObjectId, ref: 'User'},
-});
-personSchema.index({ name:1 }, { unique: true })
+},  { timestamps: true });
+personSchema.index({ name:1 }, { 
+  unique: true })
 // Compile model from schema
 module.exports =  mongoose.model('Person', personSchema);
