@@ -8,8 +8,8 @@ const {v4: uuidv4} = require("uuid");
 
 //getProfiles function to get all profiles
 const getPeople = async (req, res) => {
-    const page = req.query.pageNumber || 0;
-    const pageSize = req.query.pageSize || 0;
+    const page = Number(req.query.pageNumber || 0);
+    const pageSize = Number(req.query.pageSize || 0);
     const users = await Person.find({})
         .select(personModel)
         .populate("nationality deathPlace birthplace deathPlace")
